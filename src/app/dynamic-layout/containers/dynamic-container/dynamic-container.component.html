@@ -1,0 +1,58 @@
+<div fxFlex>
+  <div fxFlex *ngIf="!layoutConfig.children">
+    <div
+      *ngIf="editingMode"
+      class="editing-container"
+      fxFlex
+      fxLayout="column"
+      fxLayoutAlign="start center"
+    >
+      <div fxLayout="row" class="toolbar" fxFlexAlign="end">
+        <button mat-icon-button (click)="splitLayout(false)">
+          <mat-icon>vertical_split</mat-icon>
+        </button>
+        <button mat-icon-button (click)="splitLayout(true)">
+          <mat-icon>view_agenda</mat-icon>
+        </button>
+        <button mat-icon-button (click)="deleteSelf.emit()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+
+      <div
+        *ngIf="layoutConfig.componentType"
+        class="dynamic-container"
+        fxFill
+        fxLayoutAlign="center center"
+      >
+        <dl-component-config
+          [componentType]="layoutConfig.componentType"
+          [pageVariables]="pageVariables"
+        ></dl-component-config>
+      </div>
+    </div>
+  </div>
+  <as-split
+    fxFlex
+    *ngIf="layoutConfig.children"
+    [direction]="layoutConfig.column ? 'vertical' : 'horizontal'"
+    (dragEnd)="resizeEnd($event)"
+  >
+    <as-split-area [size]="layoutConfig.split">
+      <dl-dynamic-container
+        fxFlex
+        [layoutConfig]="layoutConfig.children.first"
+        [pageVariables]="pageVariables"
+        (deleteSelf)="deleteChild(true)"
+      ></dl-dynamic-container>
+    </as-split-area>
+    <as-split-area [size]="100 - layoutConfig.split">
+      <dl-dynamic-container
+        fxFlex
+        [layoutConfig]="layoutConfig.children.second"
+        [pageVariables]="pageVariables"
+        (deleteSelf)="deleteChild(false)"
+      ></dl-dynamic-container>
+    </as-split-area>
+  </as-split>
+</div>

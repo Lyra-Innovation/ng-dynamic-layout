@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, ComponentFactoryResolver } from '@angular/core';
+import { ExampleComponent } from './example/example.component';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,8 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'ng-dynamic-layout';
+
+  constructor(private c: ComponentFactoryResolver) {
+    console.log(c.resolveComponentFactory(ExampleComponent));
+  }
 }

@@ -1,0 +1,28 @@
+<mat-card>
+  <h3>Inputs</h3>
+  <form [formGroup]="inputsForm">
+    <div *ngFor="let input of inputProperties">
+      <mat-form-field>
+        <mat-label>{{ input }}</mat-label>
+        <mat-select [formControlName]="input">
+          <mat-option *ngFor="let variable of pageVariables" [value]="variable">
+            {{ variable }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </form>
+  <h3>Outputs</h3>
+  <form [formGroup]="outputsForm">
+    <div *ngFor="let output of outputProperties">
+      <mat-form-field>
+        <mat-label>{{ output }}</mat-label>
+        <mat-select [formControlName]="output">
+          <mat-option *ngFor="let variable of pageVariables" [value]="variable">
+            {{ variable }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </form>
+</mat-card>

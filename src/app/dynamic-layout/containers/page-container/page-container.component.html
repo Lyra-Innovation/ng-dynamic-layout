@@ -1,0 +1,7 @@
+<ng-container *ngIf="(pageLayout$ | async); let pageLayout">
+  <dl-dynamic-container
+    fxFill
+    [layoutConfig]="pageLayout.config"
+    [pageVariables]="getKeys(pageLayout.variables)"
+  ></dl-dynamic-container
+></ng-container>
