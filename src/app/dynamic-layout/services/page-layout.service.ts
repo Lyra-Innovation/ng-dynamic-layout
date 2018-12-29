@@ -12,11 +12,18 @@ export class PageLayoutService {
   public getPageLayout(pageId: string): Observable<PageLayout> {
     return of({
       id: 'id1',
+      editingMode: false,
       variables: {
         myvariable: 'nothing'
       },
       config: {
-        componentType: 'ExampleComponent',
+        component: {
+          type: 'ExampleComponent',
+          bindings: {
+            inputs: {},
+            outputs: {}
+          }
+        },
         column: true,
         split: 50
       }

@@ -1,20 +1,27 @@
 import { Dictionary } from '@ngrx/entity';
-import { Type } from '@angular/core';
 
 export interface PageLayout {
   id: string;
-  variables: Dictionary<string>;
+  variables: Dictionary<any>;
 
   config: LayoutConfig;
 }
 
 export interface LayoutConfig {
-  componentType: string;
+  component: ComponentConfig;
 
   column: boolean;
   split: number;
   children?: {
     first: LayoutConfig;
     second: LayoutConfig;
+  };
+}
+
+export interface ComponentConfig {
+  type: string;
+  bindings: {
+    inputs: Dictionary<string>;
+    outputs: Dictionary<string>;
   };
 }

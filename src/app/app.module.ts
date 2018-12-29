@@ -10,7 +10,9 @@ import {
   MatButtonModule,
   MatSidenavModule,
   MatIconModule,
-  MatListModule
+  MatListModule,
+  MatFormFieldModule,
+  MatInputModule
 } from '@angular/material';
 import { StoreModule } from '@ngrx/store';
 import { reducers } from './state';
@@ -21,15 +23,18 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { DynamicLayoutModule } from './dynamic-layout/dynamic-layout.module';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ExampleComponent } from './example/example.component';
+import { ExampleInputComponent } from './example-input/example-input.component';
 
 @NgModule({
-  declarations: [AppComponent, ExampleComponent],
+  declarations: [AppComponent, ExampleComponent, ExampleInputComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     LayoutModule,
     MatToolbarModule,
+    MatFormFieldModule,
+    MatInputModule,
     MatButtonModule,
     MatSidenavModule,
     MatIconModule,
@@ -46,6 +51,6 @@ import { ExampleComponent } from './example/example.component';
   ],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents: [ExampleComponent]
+  entryComponents: [ExampleComponent, ExampleInputComponent]
 })
 export class AppModule {}

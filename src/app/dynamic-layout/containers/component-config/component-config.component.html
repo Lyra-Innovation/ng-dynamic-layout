@@ -1,0 +1,33 @@
+<mat-card>
+  <h3>Inputs</h3>
+  <div *ngFor="let input of inputProperties">
+    <mat-form-field appearance="outline">
+      <mat-label>{{ input }}</mat-label>
+      <mat-select (valueChange)="inputBindingSelected($event, input)">
+        <mat-option></mat-option>
+        <mat-option
+          *ngFor="let variable of (pageVariables$ | async)"
+          [value]="variable"
+        >
+          {{ variable }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <h3>Outputs</h3>
+  <div *ngFor="let output of outputProperties">
+    <mat-form-field appearance="outline">
+      <mat-label>{{ output }}</mat-label>
+      <mat-select (valueChange)="outputBindingSelected($event, output)">
+        <mat-option></mat-option>
+        <mat-option
+          *ngFor="let variable of (pageVariables$ | async)"
+          [value]="variable"
+        >
+          {{ variable }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</mat-card>

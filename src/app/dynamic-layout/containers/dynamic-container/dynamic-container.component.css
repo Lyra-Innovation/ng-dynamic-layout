@@ -8,3 +8,7 @@
 
 .toolbar {
 }
+
+.vertical-split .mat-icon {
+  transform: rotate(90deg);
+}

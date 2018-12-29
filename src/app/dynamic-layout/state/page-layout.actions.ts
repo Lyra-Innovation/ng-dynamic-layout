@@ -13,7 +13,8 @@ export enum PageLayoutActionTypes {
   UpdatePageLayouts = '[PageLayout] Update PageLayouts',
   DeletePageLayout = '[PageLayout] Delete PageLayout',
   DeletePageLayouts = '[PageLayout] Delete PageLayouts',
-  ClearPageLayouts = '[PageLayout] Clear PageLayouts'
+  ClearPageLayouts = '[PageLayout] Clear PageLayouts',
+  UpdateVariableValue = '[PageLayout] Update Variable Value'
 }
 
 export class LoadPageLayout implements Action {
@@ -80,6 +81,14 @@ export class ClearPageLayouts implements Action {
   readonly type = PageLayoutActionTypes.ClearPageLayouts;
 }
 
+export class UpdateVariableValue implements Action {
+  readonly type = PageLayoutActionTypes.UpdateVariableValue;
+
+  constructor(
+    public payload: { pageId: string; variableName: string; variableValue: any }
+  ) {}
+}
+
 export type PageLayoutActions =
   | LoadPageLayout
   | LoadPageLayoutSuccess
@@ -91,4 +100,5 @@ export type PageLayoutActions =
   | UpdatePageLayouts
   | DeletePageLayout
   | DeletePageLayouts
-  | ClearPageLayouts;
+  | ClearPageLayouts
+  | UpdateVariableValue;

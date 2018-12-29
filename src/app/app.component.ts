@@ -9,7 +9,5 @@ import { ExampleComponent } from './example/example.component';
 export class AppComponent {
   title = 'ng-dynamic-layout';
 
-  constructor(private c: ComponentFactoryResolver) {
-    console.log(c.resolveComponentFactory(ExampleComponent));
-  }
+  constructor() {}
 }

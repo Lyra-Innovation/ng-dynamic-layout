@@ -1,7 +1,20 @@
-<ng-container *ngIf="(pageLayout$ | async); let pageLayout">
+<div
+  fxFlex
+  fxLayout="column"
+  fxLayoutAlign="center stretch"
+  fxLayoutGap="8px"
+  *ngIf="pageLayout"
+>
+  <dl-editing-toolbar
+    [editingMode]="editingMode"
+    (turnOnEditing)="turnEditingOn()"
+    (saveLayoutChanges)="saveLayoutChanges(pageLayout)"
+    (discardLayoutChanges)="discardChanges()"
+  ></dl-editing-toolbar>
   <dl-dynamic-container
-    fxFill
+    fxFlex
+    [pageId]="page"
+    [editingMode]="editingMode"
     [layoutConfig]="pageLayout.config"
-    [pageVariables]="getKeys(pageLayout.variables)"
-  ></dl-dynamic-container
-></ng-container>
+  ></dl-dynamic-container>
+</div>

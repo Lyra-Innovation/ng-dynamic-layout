@@ -1,6 +1,9 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { LayoutConfig } from '../../state/page-layout.model';
+import { LayoutConfig, ComponentConfig } from '../../state/page-layout.model';
 import { ExampleComponent } from 'src/app/example/example.component';
+import * as fromLayout from '../../state/page-layout.reducer';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'dl-dynamic-container',
@@ -9,26 +12,34 @@ import { ExampleComponent } from 'src/app/example/example.component';
 })
 export class DynamicContainerComponent implements OnInit {
   @Input()
+  pageId: string;
+
+  @Input()
   layoutConfig: LayoutConfig = this.initialLayout();
 
   @Input()
-  pageVariables: string[];
-
-  @Input()
-  editingMode = true;
+  editingMode: boolean;
 
   @Output()
   deleteSelf = new EventEmitter<any>();
 
-  component: any;
+  pageVariableName$: Observable<string[]>;
+  availableComponents$: Observable<string[]>;
 
-  constructor() {}
+  constructor(private store: Store<fromLayout.LayoutState>) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.pageVariableName$ = this.store.select(
+      fromLayout.selectVariablesNames(this.pageId)
+    );
+    this.availableComponents$ = this.store.select(
+      fromLayout.selectAvailableComponents
+    );
+  }
 
-  initialLayout(componentType: string = null): LayoutConfig {
+  initialLayout(componentConfig: ComponentConfig = null): LayoutConfig {
     return {
-      componentType: componentType,
+      component: componentConfig,
       column: true,
       split: 50
     };
@@ -37,18 +48,35 @@ export class DynamicContainerComponent implements OnInit {
   splitLayout(column: boolean) {
     this.layoutConfig.column = column;
     this.layoutConfig.children = {
-      first: this.initialLayout(this.layoutConfig.componentType),
+      first: this.initialLayout(this.layoutConfig.component),
       second: this.initialLayout()
     };
+    this.layoutConfig.component = null;
   }
 
   deleteChild(first: boolean) {
-    this.layoutConfig.children = first
-      ? this.layoutConfig.children.second.children
-      : this.layoutConfig.children.first.children;
+    const childToCopy = first
+      ? this.layoutConfig.children.second
+      : this.layoutConfig.children.first;
+
+    for (const key of Object.keys(this.layoutConfig)) {
+      this.layoutConfig[key] = childToCopy[key];
+    }
   }
 
   resizeEnd(event) {
     this.layoutConfig.split = event.sizes[0];
+  }
+
+  selectComponent(selectedComponent: string) {
+    this.layoutConfig.component = selectedComponent
+      ? {
+          type: selectedComponent,
+          bindings: {
+            inputs: {},
+            outputs: {}
+          }
+        }
+      : null;
   }
 }

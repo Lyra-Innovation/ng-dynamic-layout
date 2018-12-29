@@ -8,6 +8,7 @@ import { createFeatureSelector, createSelector } from '@ngrx/store';
 
 export interface LayoutState extends EntityState<PageLayout> {
   // additional entities state properties
+  availableComponents: string[];
 }
 
 export const adapter: EntityAdapter<PageLayout> = createEntityAdapter<
@@ -16,6 +17,7 @@ export const adapter: EntityAdapter<PageLayout> = createEntityAdapter<
 
 export const initialState: LayoutState = adapter.getInitialState({
   // additional entity state properties
+  availableComponents: ['ExampleComponent', 'ExampleInputComponent']
 });
 
 export function reducer(
@@ -23,6 +25,7 @@ export function reducer(
   action: PageLayoutActions
 ): LayoutState {
   switch (action.type) {
+
     case PageLayoutActionTypes.AddPageLayout: {
       return adapter.addOne(action.payload.pageLayout, state);
     }
@@ -37,6 +40,20 @@ export function reducer(
 
     case PageLayoutActionTypes.UpsertPageLayouts: {
       return adapter.upsertMany(action.payload.pageLayouts, state);
+    }
+
+    case PageLayoutActionTypes.UpdateVariableValue: {
+      return adapter.updateOne(
+        {
+          id: action.payload.pageId,
+          changes: {
+            variables: {
+              [action.payload.variableName]: action.payload.variableValue
+            }
+          }
+        },
+        state
+      );
     }
 
     case PageLayoutActionTypes.UpdatePageLayout: {
@@ -82,4 +99,21 @@ export const selectPageById = (pageId: string) =>
   createSelector(
     selectEntities,
     entities => entities[pageId]
+  );
+
+export const selectAvailableComponents = createSelector(
+  selectLayout,
+  state => state.availableComponents
+);
+
+export const selectVariablesNames = (pageId: string) =>
+  createSelector(
+    selectPageById(pageId),
+    page => Object.keys(page.variables)
+  );
+
+export const selectVariableValue = (pageId: string, variableName: string) =>
+  createSelector(
+    selectPageById(pageId),
+    page => page.variables[variableName]
   );
