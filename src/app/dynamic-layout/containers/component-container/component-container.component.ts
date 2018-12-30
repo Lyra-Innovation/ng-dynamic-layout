@@ -10,7 +10,7 @@ import {
   EventEmitter,
   ChangeDetectorRef
 } from '@angular/core';
-import { ComponentConfig } from '../../state/page-layout.model';
+import { ComponentConfig, BindingType } from '../../state/page-layout.model';
 import * as fromLayout from '../../state/page-layout.reducer';
 import { Store } from '@ngrx/store';
 import { HostDirective } from '../../host.directive';
@@ -62,17 +62,27 @@ export class ComponentContainerComponent implements AfterViewInit, OnDestroy {
     );
 
     for (const inputKey of Object.keys(this.componentConfig.bindings.inputs)) {
-      const variableName = this.componentConfig.bindings.inputs[inputKey];
-      const subs = this.store
-        .select(fromLayout.selectVariableValue(this.pageId, variableName))
-        .subscribe(value => (componentRef.instance[inputKey] = value));
-      this.subscriptions.push(subs);
+      if (
+        this.componentConfig.bindings.inputs[inputKey].type ===
+        BindingType.VARIABLE
+      ) {
+        const variableName = this.componentConfig.bindings.inputs[inputKey]
+          .value;
+        const subs = this.store
+          .select(fromLayout.selectVariableValue(this.pageId, variableName))
+          .subscribe(value => (componentRef.instance[inputKey] = value));
+        this.subscriptions.push(subs);
+      } else {
+        componentRef.instance[inputKey] = this.componentConfig.bindings.inputs[
+          inputKey
+        ].value;
+      }
     }
 
     for (const outputKey of Object.keys(
       this.componentConfig.bindings.outputs
     )) {
-      const variableName = this.componentConfig.bindings.outputs[outputKey];
+      const variableName = this.componentConfig.bindings.outputs[outputKey].value;
       const subs = (<EventEmitter<any>>(
         componentRef.instance[outputKey]
       )).subscribe(value =>

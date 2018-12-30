@@ -3,6 +3,7 @@ import { Update } from '@ngrx/entity';
 import { PageLayout } from './page-layout.model';
 
 export enum PageLayoutActionTypes {
+  AddNewVariable = '[PageLayout] Add New Variable',
   LoadPageLayout = '[PageLayout] Load PageLayout',
   LoadPageLayoutSucces = '[PageLayout] Load PageLayout Success',
   AddPageLayout = '[PageLayout] Add PageLayout',
@@ -15,6 +16,13 @@ export enum PageLayoutActionTypes {
   DeletePageLayouts = '[PageLayout] Delete PageLayouts',
   ClearPageLayouts = '[PageLayout] Clear PageLayouts',
   UpdateVariableValue = '[PageLayout] Update Variable Value'
+}
+
+
+export class AddNewVariable implements Action {
+  readonly type = PageLayoutActionTypes.AddNewVariable;
+
+  constructor(public payload: { pageId: string; variableName: string }) {}
 }
 
 export class LoadPageLayout implements Action {
@@ -90,6 +98,7 @@ export class UpdateVariableValue implements Action {
 }
 
 export type PageLayoutActions =
+  | AddNewVariable
   | LoadPageLayout
   | LoadPageLayoutSuccess
   | AddPageLayout

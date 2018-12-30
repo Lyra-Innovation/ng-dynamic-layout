@@ -12,10 +12,14 @@ import {
   MatInputModule,
   MatAutocompleteModule,
   MatOptionModule,
-  MatSelectModule
+  MatSelectModule,
+  MatRadioModule,
+  MatCheckboxModule,
+  MatToolbarModule,
+  MatDialogModule
 } from '@angular/material';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { AngularSplitModule } from 'angular-split';
 import { PageLayoutEffects } from './state/page-layout.effects';
 import { PageContainerComponent } from './containers/page-container/page-container.component';
@@ -24,6 +28,7 @@ import { ComponentConfigComponent } from './containers/component-config/componen
 import { ComponentContainerComponent } from './containers/component-container/component-container.component';
 import { EditingToolbarComponent } from './components/editing-toolbar/editing-toolbar.component';
 import { HostDirective } from './host.directive';
+import { NewVariableComponent } from './components/new-variable/new-variable.component';
 
 @NgModule({
   declarations: [
@@ -32,15 +37,21 @@ import { HostDirective } from './host.directive';
     ComponentConfigComponent,
     ComponentContainerComponent,
     EditingToolbarComponent,
-    HostDirective
+    HostDirective,
+    NewVariableComponent
   ],
   imports: [
     CommonModule,
+    FormsModule,
     ReactiveFormsModule,
     AngularSplitModule.forRoot(),
     MatIconModule,
     MatButtonModule,
     MatCardModule,
+    MatToolbarModule,
+    MatRadioModule,
+    MatDialogModule,
+    MatCheckboxModule,
     MatInputModule,
     MatAutocompleteModule,
     MatSelectModule,
@@ -56,6 +67,7 @@ import { HostDirective } from './host.directive';
     DynamicContainerComponent,
     ComponentContainerComponent,
     EditingToolbarComponent
-  ]
+  ],
+  entryComponents: [NewVariableComponent]
 })
 export class DynamicLayoutModule {}

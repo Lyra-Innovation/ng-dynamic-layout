@@ -1,33 +1,113 @@
 <mat-card>
   <h3>Inputs</h3>
-  <div *ngFor="let input of inputProperties">
-    <mat-form-field appearance="outline">
-      <mat-label>{{ input }}</mat-label>
-      <mat-select (valueChange)="inputBindingSelected($event, input)">
-        <mat-option></mat-option>
-        <mat-option
-          *ngFor="let variable of (pageVariables$ | async)"
-          [value]="variable"
-        >
-          {{ variable }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+  <div
+    *ngFor="let input of (bindings.inputs | keyvalue)"
+    fxLayout="column"
+    fxLayoutAlign="center start"
+    fxLayoutGap="8px"
+  >
+    <mat-checkbox
+      [value]="_componentConfig.bindings.inputs[input]"
+      (change)="toggleBinding($event, 'inputs', input.key)"
+    >
+      {{ input.key }}
+    </mat-checkbox>
+    <div
+      *ngIf="_componentConfig.bindings.inputs[input.key]"
+      fxLayout="row"
+      fxLayoutAlign="center center"
+      fxLayoutGap="8px"
+    >
+      <mat-radio-group
+        [(ngModel)]="input.value.type"
+        fxLayout="column"
+        fxLayoutGap="4px"
+      >
+        <mat-radio-button [value]="BindingType.CONSTANT">
+          Constant
+        </mat-radio-button>
+        <mat-radio-button [value]="BindingType.VARIABLE">
+          Variable
+        </mat-radio-button>
+      </mat-radio-group>
+
+      <mat-form-field
+        *ngIf="input.value.type === BindingType.VARIABLE"
+        appearance="outline"
+      >
+        <mat-label>Variable Name</mat-label>
+        <mat-select [(ngModel)]="input.value.value">
+          <mat-option
+            *ngFor="let variable of (pageVariables$ | async)"
+            [value]="variable"
+          >
+            {{ variable }}
+          </mat-option>
+          <hr />
+          <mat-option (click)="addNewVariable()">
+            <mat-icon>add</mat-icon>
+            New variable
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field
+        *ngIf="input.value.type === BindingType.CONSTANT"
+        appearance="outline"
+      >
+        <mat-label>Constant</mat-label>
+        <input matInput [(ngModel)]="input.value.value" />
+      </mat-form-field>
+    </div>
   </div>
 
   <h3>Outputs</h3>
-  <div *ngFor="let output of outputProperties">
-    <mat-form-field appearance="outline">
-      <mat-label>{{ output }}</mat-label>
-      <mat-select (valueChange)="outputBindingSelected($event, output)">
-        <mat-option></mat-option>
-        <mat-option
-          *ngFor="let variable of (pageVariables$ | async)"
-          [value]="variable"
-        >
-          {{ variable }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+  <div
+    *ngFor="let output of (bindings.outputs | keyvalue)"
+    fxLayout="column"
+    fxLayoutAlign="center start"
+    fxLayoutGap="8px"
+  >
+    <mat-checkbox
+      [value]="_componentConfig.bindings.outputs[output.key]"
+      (change)="toggleBinding($event, 'outputs', output.key)"
+    >
+      {{ output.key }}
+    </mat-checkbox>
+    <div
+      *ngIf="_componentConfig.bindings.outputs[output.key]"
+      fxLayout="row"
+      fxLayoutAlign="center center"
+      fxLayoutGap="8px"
+    >
+      <mat-radio-group
+        [(ngModel)]="output.value.type"
+        fxLayout="column"
+        fxLayoutGap="4px"
+      >
+        <mat-radio-button [value]="BindingType.VARIABLE">
+          Variable
+        </mat-radio-button>
+      </mat-radio-group>
+
+      <mat-form-field
+        *ngIf="output.value.type === BindingType.VARIABLE"
+        appearance="outline"
+      >
+        <mat-label>Variable Name</mat-label>
+        <mat-select [(ngModel)]="output.value.value">
+          <mat-option
+            *ngFor="let variable of (pageVariables$ | async)"
+            [value]="variable"
+          >
+            {{ variable }}
+          </mat-option>
+          <hr />
+          <mat-option (click)="addNewVariable()">
+            <mat-icon>add</mat-icon>
+            New variable
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
   </div>
 </mat-card>

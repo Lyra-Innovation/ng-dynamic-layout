@@ -25,6 +25,20 @@ export function reducer(
   action: PageLayoutActions
 ): LayoutState {
   switch (action.type) {
+    case PageLayoutActionTypes.AddNewVariable: {
+      return adapter.updateOne(
+        {
+          id: action.payload.pageId,
+          changes: {
+            variables: {
+              ...state.entities[action.payload.pageId].variables,
+              [action.payload.variableName]: null
+            }
+          }
+        },
+        state
+      );
+    }
 
     case PageLayoutActionTypes.AddPageLayout: {
       return adapter.addOne(action.payload.pageLayout, state);

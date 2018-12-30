@@ -1,21 +1,29 @@
 import {
   Component,
   OnInit,
-  ChangeDetectionStrategy,
   Input,
   Type,
-  ComponentFactoryResolver
+  ComponentFactoryResolver,
+  ViewEncapsulation
 } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { ComponentConfig } from '../../state/page-layout.model';
+import {
+  ComponentConfig,
+  Binding,
+  BindingType
+} from '../../state/page-layout.model';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import * as fromLayout from '../../state/page-layout.reducer';
+import { Dictionary } from '@ngrx/entity';
+import { MatCheckboxChange, MatDialog } from '@angular/material';
+import { NewVariableComponent } from '../../components/new-variable/new-variable.component';
+import { AddNewVariable } from '../../state/page-layout.actions';
 
 @Component({
   selector: 'dl-component-config',
   templateUrl: './component-config.component.html',
-  styleUrls: ['./component-config.component.css']
+  styleUrls: ['./component-config.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class ComponentConfigComponent implements OnInit {
   @Input()
@@ -30,12 +38,16 @@ export class ComponentConfigComponent implements OnInit {
 
   pageVariables$: Observable<string[]>;
 
-  inputProperties: string[];
-  outputProperties: string[];
+  BindingType = BindingType;
+  bindings: {
+    inputs: Dictionary<Binding>;
+    outputs: Dictionary<Binding>;
+  };
 
   constructor(
     private store: Store<fromLayout.LayoutState>,
-    private componentFactoryResolver: ComponentFactoryResolver
+    private componentFactoryResolver: ComponentFactoryResolver,
+    public dialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -55,30 +67,61 @@ export class ComponentConfigComponent implements OnInit {
     const factory = this.componentFactoryResolver.resolveComponentFactory(
       factoryClass
     );
-    const inputs = this.buildPropertiesObject(factory.inputs);
-    const outputs = this.buildPropertiesObject(factory.outputs);
 
-    this.inputProperties = Object.keys(inputs);
-    this.outputProperties = Object.keys(outputs);
-  }
-
-  buildPropertiesObject(
-    propertiesArray: Array<{ propName: string; templateName: string }>
-  ) {
-    return propertiesArray.reduce(
+    const inputBindings = factory.inputs.reduce(
       (propertiesObject, newProperty) => ({
         ...propertiesObject,
-        [newProperty.propName]: ''
+        [newProperty.propName]: this._componentConfig.bindings.inputs[
+          newProperty.propName
+        ] || {
+          type: BindingType.CONSTANT,
+          value: ''
+        }
       }),
       {}
     );
+    const outputBindings = factory.outputs.reduce(
+      (propertiesObject, newProperty) => ({
+        ...propertiesObject,
+        [newProperty.propName]: this._componentConfig.bindings.outputs[
+          newProperty.propName
+        ] || {
+          type: BindingType.VARIABLE,
+          value: ''
+        }
+      }),
+      {}
+    );
+
+    this.bindings = {
+      inputs: inputBindings,
+      outputs: outputBindings
+    };
   }
 
-  inputBindingSelected(variableName: string, inputName: string) {
-    this._componentConfig.bindings.inputs[inputName] = variableName;
+  toggleBinding(
+    checkEvent: MatCheckboxChange,
+    bindingsType: 'inputs' | 'outputs',
+    bindingKey: string
+  ) {
+    if (checkEvent.checked) {
+      this._componentConfig.bindings[bindingsType][bindingKey] = this.bindings[
+        bindingsType
+      ][bindingKey];
+    } else {
+      delete this._componentConfig.bindings[bindingsType][bindingKey];
+    }
   }
 
-  outputBindingSelected(variableName: string, outputName: string) {
-    this._componentConfig.bindings.outputs[outputName] = variableName;
+  addNewVariable() {
+    const dialogRef = this.dialog.open(NewVariableComponent, {});
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.store.dispatch(
+          new AddNewVariable({ pageId: this.pageId, variableName: result })
+        );
+      }
+    });
   }
 }

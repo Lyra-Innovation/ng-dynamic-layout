@@ -21,7 +21,17 @@ export interface LayoutConfig {
 export interface ComponentConfig {
   type: string;
   bindings: {
-    inputs: Dictionary<string>;
-    outputs: Dictionary<string>;
+    inputs: Dictionary<Binding>;
+    outputs: Dictionary<Binding>;
   };
+}
+
+export interface Binding {
+  type: BindingType;
+  value: string;
+}
+
+export enum BindingType {
+  CONSTANT,
+  VARIABLE
 }
