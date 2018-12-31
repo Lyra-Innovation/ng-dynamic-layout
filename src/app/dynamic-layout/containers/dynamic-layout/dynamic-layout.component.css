@@ -1,0 +1,14 @@
+.container {
+}
+
+.editing-container {
+  border: 1px solid black;
+  background: lightgrey;
+}
+
+.toolbar {
+}
+
+.vertical-split .mat-icon {
+  transform: rotate(90deg);
+}

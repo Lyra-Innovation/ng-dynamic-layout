@@ -11,10 +11,10 @@
     (saveLayoutChanges)="saveLayoutChanges(pageLayout)"
     (discardLayoutChanges)="discardChanges()"
   ></dl-editing-toolbar>
-  <dl-dynamic-container
+  <dl-dynamic-layout
     fxFlex
     [pageId]="page"
     [editingMode]="editingMode"
-    [layoutConfig]="pageLayout.config"
-  ></dl-dynamic-container>
+    [layoutConfig]="pageLayout.layout"
+  ></dl-dynamic-layout>
 </div>

@@ -30,6 +30,9 @@ export class ComponentContainerComponent implements AfterViewInit, OnDestroy {
   @Input()
   componentConfig: ComponentConfig;
 
+  @Input()
+  editingMode: boolean;
+
   @ViewChild(HostDirective)
   container: HostDirective;
 
@@ -46,6 +49,13 @@ export class ComponentContainerComponent implements AfterViewInit, OnDestroy {
   ) {}
 
   ngAfterViewInit() {
+    if (!this.componentConfig.bindings) {
+      this.componentConfig.bindings = {
+        inputs: {},
+        outputs: {}
+      };
+    }
+
     const factories = Array.from(
       this.componentResolverFactory['_factories'].keys()
     );
@@ -82,7 +92,8 @@ export class ComponentContainerComponent implements AfterViewInit, OnDestroy {
     for (const outputKey of Object.keys(
       this.componentConfig.bindings.outputs
     )) {
-      const variableName = this.componentConfig.bindings.outputs[outputKey].value;
+      const variableName = this.componentConfig.bindings.outputs[outputKey]
+        .value;
       const subs = (<EventEmitter<any>>(
         componentRef.instance[outputKey]
       )).subscribe(value =>

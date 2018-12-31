@@ -1,0 +1,5 @@
+<mat-tab-group>
+  <ng-container *ngFor="let child of layoutConfig.children">
+    <mat-tab [label]="child.config.name"> </mat-tab>
+  </ng-container>
+</mat-tab-group>

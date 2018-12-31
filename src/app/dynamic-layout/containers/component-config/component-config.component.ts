@@ -32,6 +32,13 @@ export class ComponentConfigComponent implements OnInit {
   _componentConfig: ComponentConfig;
   @Input()
   set componentConfig(componentConfig: ComponentConfig) {
+    if (!componentConfig.bindings) {
+      componentConfig.bindings = {
+        inputs: {},
+        outputs: {}
+      };
+    }
+
     this._componentConfig = componentConfig;
     this.setupComponentBindings(componentConfig.type);
   }
