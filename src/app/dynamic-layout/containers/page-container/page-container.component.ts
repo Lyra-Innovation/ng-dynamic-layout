@@ -34,10 +34,6 @@ export class PageContainerComponent implements OnInit, OnDestroy {
       .subscribe(layout => (this.pageLayout = layout));
   }
 
-  getKeys(variables: Dictionary<string>) {
-    return Object.keys(variables);
-  }
-
   turnEditingOn() {
     this.backupPageLayout = _.cloneDeep(this.pageLayout);
     this.toggleEditingMode();

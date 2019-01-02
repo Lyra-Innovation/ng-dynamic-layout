@@ -1,6 +1,7 @@
 <div *ngIf="componentConfig" fxFill fxLayoutAlign="center center">
   <ng-container *ngIf="showComponentConfiguration()">
     <dl-component-config
+      fxFill
       [pageId]="pageId"
       [componentConfig]="componentConfig"
     ></dl-component-config>

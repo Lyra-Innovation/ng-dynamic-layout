@@ -6,10 +6,14 @@
       fxLayout="column"
       fxLayoutAlign="start stretch"
     >
-      <!-- If layout does not have children and is editing, display the component configuration -->
-      <div *ngIf="editingMode" fxLayout="row" fxLayoutAlign="center center">
-        <div fxLayout="row" fxFlex fxLayoutAlign="center center">
-          <mat-form-field>
+      <div
+        *ngIf="editingMode"
+        fxLayout="row"
+        fxLayoutAlign="center center"
+        class="toolbar"
+      >
+        <div fxLayout="row" fxFlex fxLayoutAlign="start center">
+          <mat-form-field class="component-selector">
             <mat-label>Component</mat-label>
             <mat-select
               [value]="layoutConfig.component?.type"
@@ -43,14 +47,23 @@
           <button mat-icon-button (click)="splitLayout(true)">
             <mat-icon>view_agenda</mat-icon>
           </button>
-          <button mat-icon-button (click)="deleteSelf.emit()">
+          <button
+            mat-icon-button
+            [disabled]="!childLayout"
+            (click)="deleteSelf.emit()"
+          >
             <mat-icon>close</mat-icon>
           </button>
         </div>
       </div>
 
       <!-- If layout does not have children and is not editing, display the component -->
-      <div *ngIf="layoutConfig.component" fxFlex fxLayoutAlign="center center" class="child-container">
+      <div
+        *ngIf="layoutConfig.component"
+        fxFlex
+        fxLayoutAlign="center center"
+        [ngClass]="{ 'child-container': editingMode }"
+      >
         <dl-dynamic-container
           fxFill
           fxLayoutAlign="center center"
@@ -77,6 +90,7 @@
           fxFlex
           [pageId]="pageId"
           [editingMode]="editingMode"
+          [childLayout]="true"
           [layoutConfig]="layoutConfig.children.first"
           (deleteSelf)="deleteChild(true)"
         ></dl-dynamic-layout>
@@ -86,6 +100,7 @@
           fxFlex
           [pageId]="pageId"
           [editingMode]="editingMode"
+          [childLayout]="true"
           [layoutConfig]="layoutConfig.children.second"
           (deleteSelf)="deleteChild(false)"
         ></dl-dynamic-layout>

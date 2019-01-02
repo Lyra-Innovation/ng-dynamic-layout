@@ -1,9 +1,9 @@
 <div
+  *ngIf="pageLayout"
   fxFlex
   fxLayout="column"
   fxLayoutAlign="center stretch"
   fxLayoutGap="8px"
-  *ngIf="pageLayout"
 >
   <dl-editing-toolbar
     [editingMode]="editingMode"

@@ -18,6 +18,10 @@ export class DynamicLayoutComponent implements OnInit {
   @Input()
   layoutConfig: DynamicLayoutConfig = this.initialLayout();
 
+  /** Whether this layout is a child of another dynamic-layout, and thus can be eliminated */
+  @Input()
+  childLayout = false;
+
   @Input()
   editingMode: boolean;
   configureComponent = false;

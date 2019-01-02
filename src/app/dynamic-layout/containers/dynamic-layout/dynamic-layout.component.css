@@ -7,6 +7,13 @@
 }
 
 .toolbar {
+  padding-left: 32px;
+  padding-right: 16px;
+}
+
+.component-selector {
+  margin-top: 8px;
+  width: 16em;
 }
 
 .vertical-split .mat-icon {

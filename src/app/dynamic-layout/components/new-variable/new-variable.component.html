@@ -1,8 +1,8 @@
-<div fxLayout="column">
+<div fxLayout="column" fxFlex>
   <mat-toolbar color="primary">
     <button mat-icon-button (click)="cancel()"><mat-icon>close</mat-icon></button>
 
-    <mat-label>Add new variable</mat-label>
+    <mat-label fxFlex>Add new variable</mat-label>
 
     <button
       mat-raised-button
@@ -14,9 +14,10 @@
     </button>
   </mat-toolbar>
 
-  <div fxFlex fxLayoutAlign="center center" class="dialog-content">
+  <div fxLayoutAlign="center center" class="dialog-content">
     <mat-form-field appearance="outline">
-      <input matInput placeholder="Variable name" [(ngModel)]="variableName" />
+      <mat-label>Variable name</mat-label>
+      <input matInput [(ngModel)]="variableName" />
     </mat-form-field>
   </div>
 </div>

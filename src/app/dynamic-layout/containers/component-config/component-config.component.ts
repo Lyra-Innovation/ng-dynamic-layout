@@ -52,6 +52,8 @@ export class ComponentConfigComponent implements OnInit {
     outputs: Dictionary<Binding>;
   };
 
+  objectEmpty = (object: any) => Object.keys(object).length === 0;
+
   constructor(
     private store: Store<fromLayout.LayoutState>,
     private componentResolver: ComponentResolverService,
@@ -115,7 +117,10 @@ export class ComponentConfigComponent implements OnInit {
   }
 
   addNewVariable() {
-    const dialogRef = this.dialog.open(NewVariableComponent, {});
+    const dialogRef = this.dialog.open(NewVariableComponent, {
+      minWidth: '400px',
+      minHeight: '200px'
+    });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {

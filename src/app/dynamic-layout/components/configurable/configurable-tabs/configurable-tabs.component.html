@@ -3,16 +3,23 @@
     <ng-container *ngFor="let child of layoutConfig.children">
       <mat-tab>
         <ng-template mat-tab-label>
-          <mat-form-field>
-            <input matInput [(ngModel)]="child.config.name" />
-          </mat-form-field>
-          <button
-            mat-icon-button
-            [disabled]="layoutConfig.children.length === 1"
-            (click)="removeTab(child)"
-          >
-            <mat-icon>close</mat-icon>
-          </button>
+          <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="4px">
+            <mat-form-field floatLabel="never" (click)="$event.preventDefault()">
+              <input
+                matInput
+                placeholder="Tab name"
+                [(ngModel)]="child.config.name"
+                (keydown)="$event.stopPropagation()"
+              />
+            </mat-form-field>
+            <button
+              mat-icon-button
+              [disabled]="layoutConfig.children.length === 1"
+              (click)="removeTab(child)"
+            >
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
         </ng-template>
 
         <dl-dynamic-layout
@@ -39,7 +46,7 @@
     <ng-container *ngFor="let child of layoutConfig.children">
       <mat-tab [label]="child.config.name">
         <dl-dynamic-layout
-          fxFlex
+          fxFill
           [pageId]="pageId"
           [editingMode]="editingMode"
           [layoutConfig]="child.component"

@@ -31,8 +31,15 @@ export class ComponentContainerComponent implements AfterViewInit, OnDestroy {
   @Input()
   pageId: string;
 
+  _componentConfig: ComponentConfig;
   @Input()
-  componentConfig: ComponentConfig;
+  set componentConfig(componentConfig: ComponentConfig) {
+    this._componentConfig = componentConfig;
+
+    if (this.componentRef) {
+      this.buildComponent(componentConfig);
+    }
+  }
 
   _editingMode: boolean;
   @Input()
@@ -40,7 +47,7 @@ export class ComponentContainerComponent implements AfterViewInit, OnDestroy {
     this._editingMode = editingMode;
     if (
       this.componentRef &&
-      this.componentResolver.isComponentConfigurable(this.componentConfig.type)
+      this.componentResolver.isComponentConfigurable(this._componentConfig.type)
     ) {
       (<ConfigurableLayout<any>>this.componentRef.instance).setEditingMode(
         editingMode
@@ -64,56 +71,53 @@ export class ComponentContainerComponent implements AfterViewInit, OnDestroy {
   ) {}
 
   ngAfterViewInit() {
-    if (!this.componentConfig.bindings) {
-      this.componentConfig.bindings = {
+    this.buildComponent(this._componentConfig);
+  }
+
+  buildComponent(componentConfig: ComponentConfig) {
+    if (!componentConfig.bindings) {
+      componentConfig.bindings = {
         inputs: {},
         outputs: {}
       };
     }
 
     const factory = this.componentResolver.getComponentFactory(
-      this.componentConfig.type
+      componentConfig.type
     );
 
+    this.container.viewContainerRef.clear();
     this.componentRef = this.container.viewContainerRef.createComponent(
       factory
     );
 
-    if (
-      this.componentResolver.isComponentConfigurable(this.componentConfig.type)
-    ) {
+    if (this.componentResolver.isComponentConfigurable(componentConfig.type)) {
       (<ConfigurableLayout<any>>this.componentRef.instance).initComponent(
         this.pageId,
-        <LayoutConfig<any>>this.componentConfig
+        <LayoutConfig<any>>componentConfig
       );
       (<ConfigurableLayout<any>>this.componentRef.instance).setEditingMode(
         this._editingMode
       );
     }
 
-    for (const inputKey of Object.keys(this.componentConfig.bindings.inputs)) {
+    for (const inputKey of Object.keys(componentConfig.bindings.inputs)) {
       if (
-        this.componentConfig.bindings.inputs[inputKey].type ===
-        BindingType.VARIABLE
+        componentConfig.bindings.inputs[inputKey].type === BindingType.VARIABLE
       ) {
-        const variableName = this.componentConfig.bindings.inputs[inputKey]
-          .value;
+        const variableName = componentConfig.bindings.inputs[inputKey].value;
         const subs = this.store
           .select(fromLayout.selectVariableValue(this.pageId, variableName))
           .subscribe(value => (this.componentRef.instance[inputKey] = value));
         this.subscriptions.push(subs);
       } else {
-        this.componentRef.instance[
-          inputKey
-        ] = this.componentConfig.bindings.inputs[inputKey].value;
+        this.componentRef.instance[inputKey] =
+          componentConfig.bindings.inputs[inputKey].value;
       }
     }
 
-    for (const outputKey of Object.keys(
-      this.componentConfig.bindings.outputs
-    )) {
-      const variableName = this.componentConfig.bindings.outputs[outputKey]
-        .value;
+    for (const outputKey of Object.keys(componentConfig.bindings.outputs)) {
+      const variableName = componentConfig.bindings.outputs[outputKey].value;
       const subs = (<EventEmitter<any>>(
         this.componentRef.instance[outputKey]
       )).subscribe(value =>
