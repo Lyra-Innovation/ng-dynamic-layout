@@ -4,6 +4,7 @@ import * as fromLayout from '../../state/page-layout.reducer';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import * as _ from 'lodash';
+import { ComponentResolverService } from '../../services/component-resolver.service';
 
 @Component({
   selector: 'dl-dynamic-layout',
@@ -19,7 +20,7 @@ export class DynamicLayoutComponent implements OnInit {
 
   @Input()
   editingMode: boolean;
-  configureComponent: boolean;
+  configureComponent = false;
 
   @Output()
   deleteSelf = new EventEmitter<any>();
@@ -27,7 +28,10 @@ export class DynamicLayoutComponent implements OnInit {
   pageVariableName$: Observable<string[]>;
   availableComponents$: Observable<string[]>;
 
-  constructor(private store: Store<fromLayout.LayoutState>) {}
+  constructor(
+    private store: Store<fromLayout.LayoutState>,
+    private componentResolver: ComponentResolverService
+  ) {}
 
   ngOnInit() {
     this.pageVariableName$ = this.store.select(
@@ -74,5 +78,14 @@ export class DynamicLayoutComponent implements OnInit {
     this.layoutConfig.component = selectedComponent
       ? { type: selectedComponent }
       : null;
+  }
+
+  isComponentConfigurable(): boolean {
+    return (
+      this.layoutConfig.component &&
+      this.componentResolver.isComponentConfigurable(
+        this.layoutConfig.component.type
+      )
+    );
   }
 }

@@ -1,8 +1,6 @@
 import {
   Component,
   Input,
-  ComponentFactoryResolver,
-  Type,
   ComponentRef,
   ViewChild,
   AfterViewInit,
@@ -10,13 +8,19 @@ import {
   EventEmitter,
   ChangeDetectorRef
 } from '@angular/core';
-import { ComponentConfig, BindingType } from '../../state/page-layout.model';
+import {
+  ComponentConfig,
+  BindingType,
+  ConfigurableLayout,
+  LayoutConfig
+} from '../../state/page-layout.model';
 import * as fromLayout from '../../state/page-layout.reducer';
 import { Store } from '@ngrx/store';
 import { HostDirective } from '../../host.directive';
 import { Dictionary } from '@ngrx/entity';
 import { Observable, Subscription } from 'rxjs';
 import { UpdateVariableValue } from '../../state/page-layout.actions';
+import { ComponentResolverService } from '../../services/component-resolver.service';
 
 @Component({
   selector: 'dl-component-container',
@@ -30,13 +34,24 @@ export class ComponentContainerComponent implements AfterViewInit, OnDestroy {
   @Input()
   componentConfig: ComponentConfig;
 
+  _editingMode: boolean;
   @Input()
-  editingMode: boolean;
+  set editingMode(editingMode: boolean) {
+    this._editingMode = editingMode;
+    if (
+      this.componentRef &&
+      this.componentResolver.isComponentConfigurable(this.componentConfig.type)
+    ) {
+      (<ConfigurableLayout<any>>this.componentRef.instance).setEditingMode(
+        editingMode
+      );
+    }
+  }
 
   @ViewChild(HostDirective)
   container: HostDirective;
 
-  component: ComponentRef<any>;
+  componentRef: ComponentRef<any>;
 
   variableValues: Dictionary<Observable<any>>;
 
@@ -44,7 +59,7 @@ export class ComponentContainerComponent implements AfterViewInit, OnDestroy {
 
   constructor(
     private store: Store<fromLayout.LayoutState>,
-    private componentResolverFactory: ComponentFactoryResolver,
+    private componentResolver: ComponentResolverService,
     private changeDetectorRef: ChangeDetectorRef
   ) {}
 
@@ -56,20 +71,25 @@ export class ComponentContainerComponent implements AfterViewInit, OnDestroy {
       };
     }
 
-    const factories = Array.from(
-      this.componentResolverFactory['_factories'].keys()
-    );
-    const factoryClass = <Type<any>>(
-      factories.find((x: any) => x.name === this.componentConfig.type)
+    const factory = this.componentResolver.getComponentFactory(
+      this.componentConfig.type
     );
 
-    const factory = this.componentResolverFactory.resolveComponentFactory(
-      factoryClass
-    );
-
-    const componentRef = this.container.viewContainerRef.createComponent(
+    this.componentRef = this.container.viewContainerRef.createComponent(
       factory
     );
+
+    if (
+      this.componentResolver.isComponentConfigurable(this.componentConfig.type)
+    ) {
+      (<ConfigurableLayout<any>>this.componentRef.instance).initComponent(
+        this.pageId,
+        <LayoutConfig<any>>this.componentConfig
+      );
+      (<ConfigurableLayout<any>>this.componentRef.instance).setEditingMode(
+        this._editingMode
+      );
+    }
 
     for (const inputKey of Object.keys(this.componentConfig.bindings.inputs)) {
       if (
@@ -80,12 +100,12 @@ export class ComponentContainerComponent implements AfterViewInit, OnDestroy {
           .value;
         const subs = this.store
           .select(fromLayout.selectVariableValue(this.pageId, variableName))
-          .subscribe(value => (componentRef.instance[inputKey] = value));
+          .subscribe(value => (this.componentRef.instance[inputKey] = value));
         this.subscriptions.push(subs);
       } else {
-        componentRef.instance[inputKey] = this.componentConfig.bindings.inputs[
+        this.componentRef.instance[
           inputKey
-        ].value;
+        ] = this.componentConfig.bindings.inputs[inputKey].value;
       }
     }
 
@@ -95,7 +115,7 @@ export class ComponentContainerComponent implements AfterViewInit, OnDestroy {
       const variableName = this.componentConfig.bindings.outputs[outputKey]
         .value;
       const subs = (<EventEmitter<any>>(
-        componentRef.instance[outputKey]
+        this.componentRef.instance[outputKey]
       )).subscribe(value =>
         this.store.dispatch(
           new UpdateVariableValue({

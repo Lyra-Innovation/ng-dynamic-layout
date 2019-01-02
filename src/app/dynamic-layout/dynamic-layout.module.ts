@@ -76,6 +76,6 @@ import { ConfigurableTabsComponent } from './components/configurable/configurabl
     ComponentContainerComponent,
     EditingToolbarComponent
   ],
-  entryComponents: [NewVariableComponent]
+  entryComponents: [NewVariableComponent, ConfigurableTabsComponent]
 })
 export class DynamicLayoutModule {}

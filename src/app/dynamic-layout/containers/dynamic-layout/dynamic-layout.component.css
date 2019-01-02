@@ -12,3 +12,8 @@
 .vertical-split .mat-icon {
   transform: rotate(90deg);
 }
+
+.child-container {
+  padding: 32px;
+  padding-top: 0px;
+}

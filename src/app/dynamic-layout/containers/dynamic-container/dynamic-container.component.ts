@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ComponentConfig } from '../../state/page-layout.model';
+import { ComponentResolverService } from '../../services/component-resolver.service';
 
 @Component({
   selector: 'dl-dynamic-container',
@@ -7,7 +8,6 @@ import { ComponentConfig } from '../../state/page-layout.model';
   styleUrls: ['./dynamic-container.component.css']
 })
 export class DynamicContainerComponent implements OnInit {
-
   @Input()
   pageId: string;
 
@@ -17,9 +17,20 @@ export class DynamicContainerComponent implements OnInit {
   @Input()
   editingMode: boolean;
 
-  constructor() { }
+  @Input()
+  configuringMode: boolean;
 
-  ngOnInit() {
+  constructor(private componentResolver: ComponentResolverService) {}
+
+  ngOnInit() {}
+
+  showComponentConfiguration(): boolean {
+    if (
+      this.componentResolver.isComponentConfigurable(this.componentConfig.type)
+    ) {
+      return this.editingMode && this.configuringMode;
+    } else {
+      return this.editingMode;
+    }
   }
-
 }

@@ -19,7 +19,7 @@ export interface ComponentConfig {
 export interface LayoutConfig<CHILDREN_CONFIG> extends ComponentConfig {
   children: Array<{
     config: CHILDREN_CONFIG;
-    component: ComponentConfig;
+    component: DynamicLayoutConfig;
   }>;
 }
 
@@ -47,6 +47,9 @@ export enum BindingType {
 }
 
 export interface ConfigurableLayout<CHILDREN_CONFIG> {
-  setLayoutConfig: (layoutConfig: LayoutConfig<CHILDREN_CONFIG>) => void;
+  initComponent: (
+    pageId: string,
+    layoutConfig: LayoutConfig<CHILDREN_CONFIG>
+  ) => void;
   setEditingMode: (editingMode: boolean) => void;
 }

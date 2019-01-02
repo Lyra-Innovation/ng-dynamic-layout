@@ -26,7 +26,10 @@
           </mat-form-field>
         </div>
         <div fxLayout="row" fxLayoutAlign="center center">
-          <mat-slide-toggle [(ngModel)]="configureComponent">
+          <mat-slide-toggle
+            *ngIf="isComponentConfigurable()"
+            [(ngModel)]="configureComponent"
+          >
             Configure component
           </mat-slide-toggle>
 
@@ -47,15 +50,16 @@
       </div>
 
       <!-- If layout does not have children and is not editing, display the component -->
-      <ng-container *ngIf="layoutConfig.component">
+      <div *ngIf="layoutConfig.component" fxFlex fxLayoutAlign="center center" class="child-container">
         <dl-dynamic-container
-          fxFlex
+          fxFill
           fxLayoutAlign="center center"
           [pageId]="pageId"
           [editingMode]="editingMode"
+          [configuringMode]="configureComponent"
           [componentConfig]="layoutConfig.component"
         ></dl-dynamic-container>
-      </ng-container>
+      </div>
     </div>
   </ng-container>
 

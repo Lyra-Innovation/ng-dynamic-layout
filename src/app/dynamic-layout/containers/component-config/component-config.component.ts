@@ -18,6 +18,7 @@ import { Dictionary } from '@ngrx/entity';
 import { MatCheckboxChange, MatDialog } from '@angular/material';
 import { NewVariableComponent } from '../../components/new-variable/new-variable.component';
 import { AddNewVariable } from '../../state/page-layout.actions';
+import { ComponentResolverService } from '../../services/component-resolver.service';
 
 @Component({
   selector: 'dl-component-config',
@@ -53,7 +54,7 @@ export class ComponentConfigComponent implements OnInit {
 
   constructor(
     private store: Store<fromLayout.LayoutState>,
-    private componentFactoryResolver: ComponentFactoryResolver,
+    private componentResolver: ComponentResolverService,
     public dialog: MatDialog
   ) {}
 
@@ -64,15 +65,8 @@ export class ComponentConfigComponent implements OnInit {
   }
 
   setupComponentBindings(componentClassName: string) {
-    const factories = Array.from(
-      this.componentFactoryResolver['_factories'].keys()
-    );
-    const factoryClass = <Type<any>>(
-      factories.find((x: any) => x.name === componentClassName)
-    );
-
-    const factory = this.componentFactoryResolver.resolveComponentFactory(
-      factoryClass
+    const factory = this.componentResolver.getComponentFactory(
+      componentClassName
     );
 
     const inputBindings = factory.inputs.reduce(

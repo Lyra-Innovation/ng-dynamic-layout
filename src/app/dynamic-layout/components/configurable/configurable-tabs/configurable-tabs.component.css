@@ -1,0 +1,15 @@
+.mat-tab-label,
+.mat-tab-disabled {
+  color: black !important;
+  min-width: auto !important;
+}
+
+.mat-tab-body-wrapper {
+  height: 100%;
+  width: 100%;
+}
+
+dl-configurable-tabs {
+  height: 100%;
+  width: 100%;
+}
