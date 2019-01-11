@@ -1,0 +1,48 @@
+<mat-sidenav-container fxFill>
+  <mat-sidenav mode="side" [opened]="true">
+    <ng-container *ngIf="!editingMode">
+      <mat-nav-list>
+        <ng-container *ngFor="let child of layoutConfig.children">
+          <a mat-list-item (click)="selectedChild = child.component">
+            {{ child.config.name }}
+          </a>
+        </ng-container>
+      </mat-nav-list>
+    </ng-container>
+
+    <ng-container *ngIf="editingMode">
+      <div fxLayout="column">
+        <mat-nav-list>
+          <ng-container *ngFor="let child of layoutConfig.children">
+            <a mat-list-item (click)="selectedChild = child.component">
+              <mat-form-field floatLabel="never">
+                <input
+                  matInput
+                  placeholder="routeName"
+                  [(ngModel)]="child.config.name"
+                />
+              </mat-form-field>
+              <button mat-icon-button (click)="removeChild(child)">
+                <mat-icon> close </mat-icon>
+              </button>
+            </a>
+          </ng-container>
+        </mat-nav-list>
+
+        <button fxFlex mat-button (click)="addChild()">
+          <mat-icon>add</mat-icon>
+          Add route
+        </button>
+      </div>
+    </ng-container>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <dl-dynamic-layout
+      fxFill
+      [pageId]="pageId"
+      [editingMode]="editingMode"
+      [layoutConfig]="selectedChild"
+    ></dl-dynamic-layout>
+  </mat-sidenav-content>
+</mat-sidenav-container>

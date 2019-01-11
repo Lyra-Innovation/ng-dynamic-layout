@@ -18,7 +18,9 @@ import {
   MatToolbarModule,
   MatDialogModule,
   MatTabsModule,
-  MatSlideToggleModule
+  MatSlideToggleModule,
+  MatSidenavModule,
+  MatListModule
 } from '@angular/material';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
@@ -33,6 +35,7 @@ import { EditingToolbarComponent } from './components/editing-toolbar/editing-to
 import { HostDirective } from './host.directive';
 import { NewVariableComponent } from './components/new-variable/new-variable.component';
 import { ConfigurableTabsComponent } from './components/configurable/configurable-tabs/configurable-tabs.component';
+import { ConfigurableSidenavComponent } from './components/configurable/configurable-sidenav/configurable-sidenav.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +47,8 @@ import { ConfigurableTabsComponent } from './components/configurable/configurabl
     EditingToolbarComponent,
     HostDirective,
     NewVariableComponent,
-    ConfigurableTabsComponent
+    ConfigurableTabsComponent,
+    ConfigurableSidenavComponent
   ],
   imports: [
     CommonModule,
@@ -52,6 +56,7 @@ import { ConfigurableTabsComponent } from './components/configurable/configurabl
     ReactiveFormsModule,
     AngularSplitModule.forRoot(),
     MatIconModule,
+    MatSidenavModule,
     MatButtonModule,
     MatCardModule,
     MatToolbarModule,
@@ -64,6 +69,7 @@ import { ConfigurableTabsComponent } from './components/configurable/configurabl
     MatAutocompleteModule,
     MatSelectModule,
     MatOptionModule,
+    MatListModule,
     MatFormFieldModule,
     FlexLayoutModule,
     DragDropModule,
@@ -74,8 +80,13 @@ import { ConfigurableTabsComponent } from './components/configurable/configurabl
     PageContainerComponent,
     DynamicContainerComponent,
     ComponentContainerComponent,
-    EditingToolbarComponent
+    EditingToolbarComponent,
+    ConfigurableSidenavComponent
   ],
-  entryComponents: [NewVariableComponent, ConfigurableTabsComponent]
+  entryComponents: [
+    NewVariableComponent,
+    ConfigurableTabsComponent,
+    ConfigurableSidenavComponent
+  ]
 })
 export class DynamicLayoutModule {}

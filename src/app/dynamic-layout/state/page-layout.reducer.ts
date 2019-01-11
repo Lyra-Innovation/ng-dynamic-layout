@@ -17,7 +17,12 @@ export const adapter: EntityAdapter<PageLayout> = createEntityAdapter<
 
 export const initialState: LayoutState = adapter.getInitialState({
   // additional entity state properties
-  availableComponents: ['ExampleComponent', 'ExampleInputComponent', 'ConfigurableTabsComponent']
+  availableComponents: [
+    'ExampleComponent',
+    'ExampleInputComponent',
+    'ConfigurableTabsComponent',
+    'ConfigurableSidenavComponent'
+  ]
 });
 
 export function reducer(

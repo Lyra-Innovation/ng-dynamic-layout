@@ -3,6 +3,7 @@ import {
   LayoutConfig,
   ConfigurableLayout
 } from 'src/app/dynamic-layout/state/page-layout.model';
+import { BaseConfigurableLayout } from '../base.configurable';
 
 @Component({
   selector: 'dl-configurable-tabs',
@@ -11,48 +12,17 @@ import {
   encapsulation: ViewEncapsulation.None
 })
 export class ConfigurableTabsComponent
-  implements OnInit, ConfigurableLayout<{ name: string }> {
-  pageId: string;
-  editingMode = false;
-  layoutConfig: LayoutConfig<{ name: string }>;
-
-  constructor() {}
+  extends BaseConfigurableLayout<{ name: string }>
+  implements OnInit {
+  constructor() {
+    super();
+  }
 
   ngOnInit() {}
 
-  initComponent(
-    pageId: string,
-    layoutConfig: LayoutConfig<{ name: string }>
-  ): void {
-    this.pageId = pageId;
-
-    this.layoutConfig = layoutConfig;
-    if (!this.layoutConfig.children) {
-      this.layoutConfig.children = [];
-      this.addTab();
-    }
+  protected buildNewChildConfig() {
+    return {
+      name: ''
+    };
   }
-
-  setEditingMode(editingMode: boolean): void {
-    this.editingMode = editingMode;
-  }
-
-  addTab() {
-    this.layoutConfig.children.push({
-      config: {
-        name: ''
-      },
-      component: {
-        component: null
-      }
-    });
-  }
-
-  removeTab(child) {
-    this.layoutConfig.children.splice(
-      this.layoutConfig.children.indexOf(child),
-      1
-    );
-  }
-
 }
